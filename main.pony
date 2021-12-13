@@ -117,7 +117,7 @@ class Analyze
       for fptr in Range(0, filecount) do
         let zipstat: Zipstat = zipptr.zip_stat_index(fptr)?
         let fname: String = zipstat.name()
-        if (r == fname.lower()) then r_of_note.push(fname) end
+        if (r == fname) then r_of_note.push(fname) end
         if (jar == fname.lower()) then recursefiles.push(zipstat) end
         if (ear == fname.lower()) then recursefiles.push(zipstat) end
         if (zip == fname.lower()) then recursefiles.push(zipstat) end
