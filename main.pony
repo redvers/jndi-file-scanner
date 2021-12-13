@@ -1,4 +1,5 @@
 use @exit[None](errno: I32)
+use "cli"
 use "collections"
 use "ponyzip"
 use "debug"
@@ -6,11 +7,40 @@ use "regex"
 
 actor Main
   new create(env: Env) =>
-    try
-      let filename: String val = env.args(1)?
-      env.err.print("Attempting to read: " + filename)
+    let cs =
+      try
+        CommandSpec.leaf("jndi-file-scanner", "CLI program to help you find vulnerable artifacts", [
+          OptionSpec.bool("all", "All filenames" where short' = 'a', default' = false)
+          OptionSpec.string("regex", "Custom Regex" where short' = 'r', default' = "JndiLookup")
+          OptionSpec.string("filename", "File to search" where short' = 'f')
+        ], [
+        ])? .> add_help()?
+      else
+        @exit(-1)
+        return
+      end
 
-      let analyze: Analyze = Analyze.create_from_file(env, filename)
+    let cmd =
+      match CommandParser(cs).parse(env.args, env.vars)
+      | let c: Command => c
+      | let ch: CommandHelp =>
+        ch.print_help(env.out)
+        @exit(-1)
+        return
+      | let se: SyntaxError =>
+        env.out.print(se.string())
+        @exit(-1)
+        return
+    end
+
+    let filename: String = cmd.option("filename").string()
+    var regex: String = cmd.option("regex").string()
+    if (cmd.option("all").bool()) then regex = "." end
+
+    try
+      let r: Regex = Regex(regex)?
+
+      let analyze: Analyze = Analyze.create_from_file(env, filename, r)
       if ((not analyze.zipptr.valid()) and (analyze.filecount > 0)) then
         env.err.print("Failed to open " + filename + ", " + analyze.zipptr.errorstr)
         @exit(1)
@@ -25,23 +55,26 @@ class Analyze
   let filename: String val
   var zipptr: PonyZip
   var filecount: USize = 0
+  var r: Regex
 
   var recursefiles: Array[Zipstat] = []
-  var jndi_of_note: Array[String] = []
-  var log4jof_note: Array[String] = []
+  var r_of_note: Array[String] = []
 
-  new create_from_file(env': Env, filename': String val) =>
+  new create_from_file(env': Env, filename': String val, r': Regex) =>
     env = env'
     filename = filename'
+    r = r'
 
     let rdf: ZipFlags = ZipFlags.>set(ZipRDOnly).>set(ZipCheckcons)
     zipptr = PonyZip(filename, rdf)
+    if (not zipptr.valid()) then env.out.print(filename + ": " + zipptr.errorstr) ; @exit(-1) end
     try filecount = zipptr.count()? end
     run()
 
-  new create_from_source(env': Env, filename': String val, source: NullablePointer[Zipsource]) =>
+  new create_from_source(env': Env, filename': String val, source: NullablePointer[Zipsource], r': Regex) =>
     env = env'
     filename = filename'
+    r = r'
 
     let rdf: ZipFlags = ZipFlags.>set(ZipRDOnly).>set(ZipCheckcons)
     zipptr = PonyZip.create_from_source(source, rdf)
@@ -49,21 +82,15 @@ class Analyze
     run()
 
   fun ref report() =>
-    for fname in log4jof_note.values() do
-      env.out.print("LOG4J -> " + filename + " -> " + fname)
+    for fname in r_of_note.values() do
+      env.out.print("FOUND -> " + filename + " -> " + fname)
     end
-    for fname in jndi_of_note.values() do
-      env.out.print("JNDI -> " + filename + " -> " + fname)
-    end
-//    for zipstat in recursefiles.values() do
-//      env.err.print("RECURSE -> " + filename + ": " + zipstat.name())
-//    end
 
   fun ref recurse(maxdepth: USize) =>
     for zipstat in recursefiles.values() do
       try
         let source: NullablePointer[Zipsource] = readsource(zipstat)?
-        let analyze1: Analyze = Analyze.create_from_source(env, filename + " -> " + zipstat.name(), source)
+        let analyze1: Analyze = Analyze.create_from_source(env, filename + " -> " + zipstat.name(), source, r)
         analyze1.report()
         analyze1.recurse(0)
       else
@@ -87,14 +114,10 @@ class Analyze
       let zip: Regex = Regex("\\.zip$")?
       let war: Regex = Regex("\\.war$")?
 
-      let log4j: Regex = Regex("log4j")?
-      let jndilookup: Regex = Regex("JndiLookup")?
-
       for fptr in Range(0, filecount) do
         let zipstat: Zipstat = zipptr.zip_stat_index(fptr)?
         let fname: String = zipstat.name()
-        if (log4j == fname.lower()) then log4jof_note.push(fname) end
-        if (jndilookup == fname.lower()) then jndi_of_note.push(fname) end
+        if (r == fname.lower()) then r_of_note.push(fname) end
         if (jar == fname.lower()) then recursefiles.push(zipstat) end
         if (ear == fname.lower()) then recursefiles.push(zipstat) end
         if (zip == fname.lower()) then recursefiles.push(zipstat) end
