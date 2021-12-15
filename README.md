@@ -10,6 +10,7 @@ jndi-file-scanner is "in-flight".  As we are following where the world takes us 
 
 Dependencies:
 * libzip (https://libzip.org/)
+* pcre2 (https://www.pcre.org/)
 * ponyc	(https://github.com/ponylang/ponyc/blob/main/INSTALL.md)
 * corral (https://github.com/ponylang/corral)
 
