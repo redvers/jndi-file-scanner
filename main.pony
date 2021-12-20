@@ -11,7 +11,8 @@ actor Main
       try
         CommandSpec.leaf("jndi-file-scanner", "CLI program to help you find vulnerable artifacts", [
           OptionSpec.bool("all", "All filenames" where short' = 'a', default' = false)
-          OptionSpec.string("regex", "Custom Regex" where short' = 'r', default' = "JndiLookup")
+          OptionSpec.bool("insensitive", "Case Insensitive" where short' = 'i', default' = false)
+          OptionSpec.string("regex", "Custom Regex" where short' = 'r', default' = "(?i)JndiLookup.class")
           OptionSpec.string("filename", "File to search" where short' = 'f')
         ], [
         ])? .> add_help()?
@@ -36,6 +37,7 @@ actor Main
     let filename: String = cmd.option("filename").string()
     var regex: String = cmd.option("regex").string()
     if (cmd.option("all").bool()) then regex = "." end
+    if (cmd.option("insensitive").bool()) then regex = "(?i)" + regex end
 
     try
       let r: Regex = Regex(regex)?
