@@ -4,14 +4,17 @@ use "collections"
 use "ponyzip"
 use "debug"
 use "regex"
+use "format"
 
 actor Main
+  var crc: Bool = false
   new create(env: Env) =>
     let cs =
       try
         CommandSpec.leaf("jndi-file-scanner", "CLI program to help you find vulnerable artifacts", [
           OptionSpec.bool("all", "All filenames" where short' = 'a', default' = false)
           OptionSpec.bool("insensitive", "Case Insensitive" where short' = 'i', default' = false)
+          OptionSpec.bool("crc", "output zipfile crc" where short' = 'c', default' = false)
           OptionSpec.string("regex", "Custom Regex" where short' = 'r', default' = "(?i)JndiLookup.class")
           OptionSpec.string("filename", "File to search" where short' = 'f')
         ], [
@@ -38,11 +41,12 @@ actor Main
     var regex: String = cmd.option("regex").string()
     if (cmd.option("all").bool()) then regex = "." end
     if (cmd.option("insensitive").bool()) then regex = "(?i)" + regex end
+    if (cmd.option("crc").bool()) then crc = true end
 
     try
       let r: Regex = Regex(regex)?
 
-      let analyze: Analyze = Analyze.create_from_file(env, filename, r)
+      let analyze: Analyze = Analyze.create_from_file(env, filename, r, crc)
       if ((not analyze.zipptr.valid()) and (analyze.filecount > 0)) then
         env.err.print("Failed to open " + filename + ", " + analyze.zipptr.errorstr)
         @exit(1)
@@ -58,14 +62,16 @@ class Analyze
   var zipptr: PonyZip
   var filecount: USize = 0
   var r: Regex
+  let crc: Bool
 
   var recursefiles: Array[Zipstat] = []
-  var r_of_note: Array[String] = []
+  var r_of_note: Array[Zipstat] = []
 
-  new create_from_file(env': Env, filename': String val, r': Regex) =>
+  new create_from_file(env': Env, filename': String val, r': Regex, crc': Bool) =>
     env = env'
     filename = filename'
     r = r'
+    crc = crc'
 
     let rdf: ZipFlags = ZipFlags.>set(ZipRDOnly).>set(ZipCheckcons)
     zipptr = PonyZip(filename, rdf)
@@ -73,10 +79,11 @@ class Analyze
     try filecount = zipptr.count()? end
     run()
 
-  new create_from_source(env': Env, filename': String val, source: NullablePointer[Zipsource], r': Regex) =>
+  new create_from_source(env': Env, filename': String val, source: NullablePointer[Zipsource], r': Regex, crc': Bool) =>
     env = env'
     filename = filename'
     r = r'
+    crc = crc'
 
     let rdf: ZipFlags = ZipFlags.>set(ZipRDOnly).>set(ZipCheckcons)
     zipptr = PonyZip.create_from_source(source, rdf)
@@ -84,15 +91,20 @@ class Analyze
     run()
 
   fun ref report() =>
-    for fname in r_of_note.values() do
-      env.out.print("FOUND -> " + filename + " -> " + fname)
+    for zipstat in r_of_note.values() do
+      if (crc) then
+        let str: String = Format.int[U32](zipstat.pcrc where width = 8, align = AlignRight, fmt = FormatHexBare, fill = '0')
+        env.out.write("CRC:" + str + ": ")
+      end
+
+      env.out.print("FOUND -> " + filename + " -> " + zipstat.name())
     end
 
   fun ref recurse(maxdepth: USize) =>
     for zipstat in recursefiles.values() do
       try
         let source: NullablePointer[Zipsource] = readsource(zipstat)?
-        let analyze1: Analyze = Analyze.create_from_source(env, filename + " -> " + zipstat.name(), source, r)
+        let analyze1: Analyze = Analyze.create_from_source(env, filename + " -> " + zipstat.name(), source, r, crc)
         analyze1.report()
         analyze1.recurse(0)
       else
@@ -119,7 +131,7 @@ class Analyze
       for fptr in Range(0, filecount) do
         let zipstat: Zipstat = zipptr.zip_stat_index(fptr)?
         let fname: String = zipstat.name()
-        if (r == fname) then r_of_note.push(fname) end
+        if (r == fname) then r_of_note.push(zipstat) end
         if (jar == fname.lower()) then recursefiles.push(zipstat) end
         if (ear == fname.lower()) then recursefiles.push(zipstat) end
         if (zip == fname.lower()) then recursefiles.push(zipstat) end
