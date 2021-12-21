@@ -1,6 +1,10 @@
 {
   "locks": [
     {
+      "locator": "github.com/ponylang/crypto.git",
+      "revision": "1.1.3"
+    },
+    {
       "locator": "github.com/ponylang/regex.git",
       "revision": "1.1.2"
     },
