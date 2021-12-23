@@ -1,4 +1,3 @@
-use @exit[None](errno: I32)
 use "cli"
 use "collections"
 use "ponyzip"
@@ -23,7 +22,7 @@ actor Main
         ], [
         ])? .> add_help()?
       else
-        @exit(-1)
+        env.exitcode(-1)
         return
       end
 
@@ -32,11 +31,11 @@ actor Main
       | let c: Command => c
       | let ch: CommandHelp =>
         ch.print_help(env.out)
-        @exit(-1)
+        env.exitcode(-2)
         return
       | let se: SyntaxError =>
         env.out.print(se.string())
-        @exit(-1)
+        env.exitcode(-3)
         return
     end
 
@@ -53,7 +52,8 @@ actor Main
       let analyze: Analyze = Analyze.create_from_file(env, filename, r, crc, sha256)
       if ((not analyze.zipptr.valid()) and (analyze.filecount > 0)) then
         env.err.print("Failed to open " + filename + ", " + analyze.zipptr.errorstr)
-        @exit(1)
+        env.exitcode(-4)
+        return
       end
       analyze.report()
       analyze.recurse(2)
@@ -81,7 +81,7 @@ class Analyze
 
     let rdf: ZipFlags = ZipFlags.>set(ZipRDOnly).>set(ZipCheckcons)
     zipptr = PonyZip(filename, rdf)
-    if (not zipptr.valid()) then env.out.print(filename + ": " + zipptr.errorstr) ; @exit(-1) end
+    if (not zipptr.valid()) then env.out.print(filename + ": " + zipptr.errorstr) ; env.exitcode(-5) ; return end
     try filecount = zipptr.count()? end
     run()
 
