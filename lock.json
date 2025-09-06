@@ -1,12 +1,12 @@
 {
   "locks": [
     {
-      "locator": "github.com/ponylang/crypto.git",
-      "revision": "1.1.3"
+      "locator": "github.com/ponylang/ssl.git",
+      "revision": "1.0.1"
     },
     {
       "locator": "github.com/ponylang/regex.git",
-      "revision": "1.1.2"
+      "revision": "1.1.6"
     },
     {
       "locator": "github.com/redvers/pony-libzip.git",
