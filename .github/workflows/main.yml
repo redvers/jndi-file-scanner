@@ -18,7 +18,7 @@ jobs:
       - name: Test
         run: cat Release.txt
       - name: build-binary
-        run: make all
+        run: make static
       - name: Release
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
