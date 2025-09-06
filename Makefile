@@ -1,6 +1,11 @@
 all:
 	corral fetch
 	corral run -- ponyc
+
+static:
+	corral fetch
+	corral run -- ponyc --static
+
 debug:
 	corral fetch
 	corral run -- ponyc -d .
