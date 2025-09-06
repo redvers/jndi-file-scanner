@@ -15,11 +15,11 @@
     }
   ],
   "info": {
-    "description": "",
+    "description": "jndi-file-scanner - application to recursively search .zip files",
     "homepage": "",
     "license": "",
     "documentation_url": "",
-    "version": "",
-    "name": ""
+    "version": "0.0.0",
+    "name": "jndi-file-scanner"
   }
 }
