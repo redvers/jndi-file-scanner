@@ -2,12 +2,12 @@
   "packages": [],
   "deps": [
     {
-      "locator": "github.com/ponylang/crypto.git",
-      "version": "1.1.3"
+      "locator": "github.com/ponylang/ssl.git",
+      "version": "1.0.1"
     },
     {
       "locator": "github.com/ponylang/regex.git",
-      "version": "1.1.2"
+      "version": "1.1.6"
     },
     {
       "locator": "github.com/redvers/pony-libzip.git",
@@ -15,11 +15,11 @@
     }
   ],
   "info": {
-    "description": "",
-    "homepage": "",
-    "license": "",
-    "documentation_url": "",
-    "version": "",
-    "name": ""
+    "description": "jndi-file-scanner - application to recursively search .zip files",
+    "homepage": "https://github.com/redvers/jndi-file-scanner",
+    "license": "GPLv2",
+    "documentation_url": "https://redvers.github.io/jndi-file-scanner",
+    "version": "0.1.15",
+    "name": "jndi-file-scanner"
   }
 }

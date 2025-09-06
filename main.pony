@@ -4,7 +4,7 @@ use "ponyzip"
 use "debug"
 use "regex"
 use "format"
-use "crypto"
+use "ssl/crypto"
 
 actor Main
   var crc: Bool = false
