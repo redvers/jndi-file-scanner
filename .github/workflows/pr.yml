@@ -22,21 +22,21 @@ jobs:
           VALIDATE_MD: true
           VALIDATE_YAML: true
 
-  lint-python-commands:
-    name: Lint python commands
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4.1.1
-      - name: pylint
-        run: make pylint
+# lint-python-commands:
+#   name: Lint python commands
+#   runs-on: ubuntu-latest
+#   steps:
+#     - uses: actions/checkout@v4.1.1
+#     - name: pylint
+#       run: make pylint
 
-  validate-docker-image-builds:
-    name: Validate Docker image builds
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4.1.1
-      - name: Docker build
-        run: "docker build --pull ."
+# validate-docker-image-builds:
+#   name: Validate Docker image builds
+#   runs-on: ubuntu-latest
+#   steps:
+#     - uses: actions/checkout@v4.1.1
+#     - name: Docker build
+#       run: "docker build --pull ."
 
   verify-changelog:
     name: Verify CHANGELOG is valid

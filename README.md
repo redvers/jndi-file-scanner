@@ -9,19 +9,19 @@ jndi-file-scanner is "in-flight".  As we are following where the world takes us 
 ## Installation
 
 Dependencies:
-* libzip (https://libzip.org/)
-* pcre2 (https://www.pcre.org/)
-* ponyc	(https://github.com/ponylang/ponyc/blob/main/INSTALL.md)
-* corral (https://github.com/ponylang/corral)
+* libzip [https://libzip.org](https://libzip.org/)
+* pcre2  [https://www.pcre.org](https://www.pcre.org/)
+* ponyc  [https://github.com/ponylang/ponyc/blob/main/INSTALL.md](https://github.com/ponylang/ponyc/blob/main/INSTALL.md)
+* corral [https://github.com/ponylang/corral](https://github.com/ponylang/corral)
 
 Get libzip however your distribution packages it.
 The Pony Project recommend using ponyup to install ponyc and corral.  Instructions on the website.
 
-### How to build:
+### How to build
 
 For example, on Ubuntu:
 
-```
+```shell
 sudo apt install curl build-essential git cmake clang libpcre2-dev libzip-dev
 *install ponyup*
 ponyup default ubuntu18.04
@@ -39,7 +39,7 @@ I have not used any Linux specific code so it should be able to compile for Wind
 
 ## Usage
 
-```
+```quote
 usage: jndi-file-scanner [<options>] [<args> ...]
 
 CLI program to help you find vulnerable artifacts
@@ -54,7 +54,7 @@ Options:
    -r, --regex=(?i)JndiLookup.class    Custom Regex
 ```
 
-### Flag detail:
+### Flag detail
 
 * -c  You should probaby use -s (sha256) instead, but this remains as an option in case you are running on a system with low memory.
 * -f  Provides the filename of the file you with to scan (supports anything which is really a zip-file).
@@ -64,13 +64,13 @@ Options:
 * -r  Provides the regex you wish to search for. (Put your regex in single quotes unless you really know what you're doing in shell)™
 
 
-## Examples:
+## Examples
 
-### Simple Example:
+### Simple Example
 
 Find any filenames that contain log4j either in the filename or in their path:
 
-```
+```quote
 [nix-shell:~/projects/pony/jndi-file-scanner/testjars]$ for f in forge*jar;do ../jndi-file-scanner -f $f -r 'log4j' -i; done
 FOUND -> forge-1.12.2-14.23.5.2854-installer(1).jar -> maven/net/minecraftforge/forge/1.12.2-14.23.5.2854/forge-1.12.2-14.23.5.2854.jar -> log4j2.xml
 FOUND -> forge-1.12.2-14.23.5.2854-installer(1).jar -> maven/net/minecraftforge/forge/1.12.2-14.23.5.2854/forge-1.12.2-14.23.5.2854.jar -> log4j2_server.xml
@@ -84,11 +84,11 @@ FOUND -> forge-1.14.3-27.0.60-installer.jar -> maven/net/minecraftforge/forge/1.
 etc ...
 ```
 
-#### More complex example:
+#### More complex example
 
 Identify when a specific class has changed over time:
 
-```
+```quote
 [nix-shell:~/projects/pony/jndi-file-scanner/testjars]$ for f in forge*jar;do ../jndi-file-scanner -f $f -r 'BackgroundScanHandler.class' -s; done
 SHA256:8805ca6d0fa923ce0bd3eccc1394f1cc57642c82ca844cfb043e031c02204292: FOUND -> forge-1.13.2-25.0.108-installer.jar -> maven/net/minecraftforge/forge/1.13.2-25.0.108/forge-1.13.2-25.0.108.jar -> net/minecraftforge/fml/loading/moddiscovery/BackgroundScanHandler.class
 SHA256:8805ca6d0fa923ce0bd3eccc1394f1cc57642c82ca844cfb043e031c02204292: FOUND -> forge-1.14.3-27.0.60-installer.jar -> maven/net/minecraftforge/forge/1.14.3-27.0.60/forge-1.14.3-27.0.60.jar -> net/minecraftforge/fml/loading/moddiscovery/BackgroundScanHandler.class
