@@ -15,11 +15,11 @@
     }
   ],
   "info": {
-    "description": "",
-    "homepage": "",
-    "license": "",
-    "documentation_url": "",
-    "version": "",
-    "name": ""
+    "description": "jndi-file-scanner - application to recursively search .zip files",
+    "homepage": "https://github.com/redvers/jndi-file-scanner",
+    "license": "GPLv2",
+    "documentation_url": "https://redvers.github.io/jndi-file-scanner",
+    "version": "0.1.13",
+    "name": "jndi-file-scanner"
   }
 }
