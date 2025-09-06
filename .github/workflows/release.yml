@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+concurrency: release
+
+jobs:
+  # validation to assure that we should in fact continue with the release should
+  # be done here. the primary reason for this step is to verify that the release
+  # was started correctly by pushing a `release-X.Y.Z` tag rather than `X.Y.Z`.
+  pre-artefact-creation:
+    name: Tasks to run before artefact creation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4.1.1
+        with:
+          ref: "main"
+          token: ${{ secrets.RELEASE_TOKEN }}
+      - name: Validate CHANGELOG
+        uses: docker://ghcr.io/ponylang/release-bot-action:0.6.3
+        with:
+          entrypoint: pre-artefact-changelog-check
+
+  build-and-push-image:
+    name: Build and push action image
+    runs-on: ubuntu-latest
+    needs:
+      - pre-artefact-creation
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - name: Login to GitHub Container Registry
+        # v2.2.0
+        uses: docker/login-action@5139682d94efc37792e6b54386b5b470a68a4737
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        run: make push
+
+  trigger-release-announcement:
+    name: Trigger release announcement
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-push-image
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          ref: "main"
+          token: ${{ secrets.RELEASE_TOKEN }}
+      - name: Trigger
+        uses: docker://ghcr.io/ponylang/release-bot-action:0.6.3
+        with:
+          entrypoint: trigger-release-announcement
+        env:
+          GIT_USER_NAME: "redvers"
+          GIT_USER_EMAIL: "red@contact.red"
