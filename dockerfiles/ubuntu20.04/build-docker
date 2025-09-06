@@ -1,3 +1,0 @@
-
-docker build --no-cache -t u20 - < Dockerfile
-docker run -v `pwd`:/out u20 cp /src/main/jndi-file-scanner/jndi-file-scanner /out

@@ -1,3 +1,3 @@
-## Testing release process
+# Testing release process
 
 This is all probably meaningless.
