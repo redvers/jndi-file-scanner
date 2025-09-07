@@ -7,6 +7,10 @@ on:
 
 concurrency: announce-a-release
 
+permissions:
+  packages: read
+  contents: write
+
 jobs:
   announce:
     name: Announcements
@@ -62,19 +66,3 @@ jobs:
         env:
           GIT_USER_NAME: "redvers"
           GIT_USER_EMAIL: "red@contact.red"
-
-  prune-untagged-images:
-    needs:
-      - announce
-
-    name: Prune untagged images
-    runs-on: ubuntu-latest
-    steps:
-      - name: Prune
-        # v4.1.1
-        uses: actions/delete-package-versions@0d39a63126868f5eefaa47169615edd3c0f61e20
-        with:
-          package-name: 'release-bot-action'
-          package-type: 'container'
-          min-versions-to-keep: 1
-          delete-only-untagged-versions: 'true'
