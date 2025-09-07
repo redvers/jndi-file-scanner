@@ -1,3 +1,3 @@
-# Testing release process
+## Added static binary generation via github workflows.
 
-This is all probably meaningless.
+Added github workflow to do automated builds of a static binary via workflows.
