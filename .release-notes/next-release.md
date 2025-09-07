@@ -14,3 +14,7 @@ This is another attempt to get the full runthough of the build process from star
 
 It appears I created a concurrency error by missing a "needs:" in the yaml file resulting in multiple executions of things that shouldn't.  This should fix this.
 
+## Updated release-bot version
+
+As we are generating our own packages as opposed to having release-bot-action do it as a part of "publish-release-notes", we need the latest version.  The latest version checks for an existing package (which we have), and modifies our package as opposed to attempting to generate a new one and fail.
+
