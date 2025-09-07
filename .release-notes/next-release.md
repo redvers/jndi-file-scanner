@@ -10,3 +10,7 @@ Github workflows now generate a static binary which should be usable on any Linu
 
 This is another attempt to get the full runthough of the build process from start to finish.
 
+## Fix concurrency error in release.yml file
+
+It appears I created a concurrency error by missing a "needs:" in the yaml file resulting in multiple executions of things that shouldn't.  This should fix this.
+
