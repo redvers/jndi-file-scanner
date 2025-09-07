@@ -42,6 +42,13 @@ jobs:
         env:
           GIT_USER_NAME: "redvers"
           GIT_USER_EMAIL: "red@contact.red"
+      - name: Update corral.json
+        uses: docker://ghcr.io/ponylang/release-bot-action:0.6.3
+        with:
+          entrypoint: update-version-in-corral-json
+        env:
+          GIT_USER_NAME: "redvers"
+          GIT_USER_EMAIL: "red@contact.red"
 #     - name: Switch to using prebuilt docker image to run
 #       uses: docker://ghcr.io/ponylang/release-bot-action:0.6.3
 #       with:
