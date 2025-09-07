@@ -27,4 +27,14 @@ jobs:
           GIT_USER_EMAIL: "red@contact.red"
         env:
           API_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
-
+#     - name: Send alert on failure
+#       if: ${{ failure() }}
+#       uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5
+#       with:
+#         api-key: ${{ secrets.ZULIP_SCHEDULED_JOB_FAILURE_API_KEY }}
+#         email: ${{ secrets.ZULIP_SCHEDULED_JOB_FAILURE_EMAIL }}
+#         organization-url: 'https://ponylang.zulipchat.com/'
+#         to: notifications
+#         type: stream
+#         topic: ${{ github.repository }} scheduled job failure
+#         content: ${{ github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }} failed.
