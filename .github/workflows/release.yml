@@ -1,0 +1,69 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+concurrency: release
+
+permissions:
+  contents: read
+  id-token: write
+  packages: read
+
+jobs:
+  pre-artefact-creation:
+    name: Tasks to run before artefact creation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4.1.1
+        with:
+          ref: "main"
+          token: ${{ secrets.RELEASE_TOKEN }}
+      - name: Validate CHANGELOG
+        uses: docker://ghcr.io/ponylang/release-bot-action:0.6.3
+        with:
+          entrypoint: pre-artefact-changelog-check
+
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/redvers/pony-dependency-builder:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Build
+        run: echo ${{ github.sha }} > Release.txt
+      - name: Test
+        run: cat Release.txt
+      - name: alpine specific
+        run: echo 'use "lib:lzma"' > alpine.pony
+      - name: build-binary
+        run: make static
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
+        with:
+          files: |
+            jndi-file-scanner
+            Release.txt
+
+  trigger-release-announcement:
+    name: Trigger release announcement
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          ref: "main"
+          token: ${{ secrets.RELEASE_TOKEN }}
+      - name: Trigger
+        uses: docker://ghcr.io/ponylang/release-bot-action:0.6.3
+        with:
+          entrypoint: trigger-release-announcement
+        env:
+          GIT_USER_NAME: "redvers"
+          GIT_USER_EMAIL: "red@contact.red"
