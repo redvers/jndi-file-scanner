@@ -8,7 +8,7 @@ on:
 concurrency: announce-a-release
 
 permissions:
-  packages: read
+  packages: write
   contents: write
 
 jobs:
