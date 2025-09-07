@@ -26,7 +26,7 @@ jobs:
         with:
           entrypoint: publish-release-notes-to-github
         env:
-          RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 #     - name: Zulip
 #       uses: docker://ghcr.io/ponylang/release-bot-action:0.6.3
 #       with:
