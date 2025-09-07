@@ -18,6 +18,7 @@ jobs:
       - name: Test
         run: cat Release.txt
       - name: build-binary
+        run: echo 'use "lib:lzma"' > alpine.pony
         run: make static
       - name: Release
         uses: softprops/action-gh-release@v2
