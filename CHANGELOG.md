@@ -1,16 +1,10 @@
 # Change Log
 
-## [unreleased] - unreleased
+## [0.1.14] - 2025-09-07
 
 ### Fixed
 
 - Looks like a newer version may solve my issues. ([PR #17](https://github.com/redvers/jndi-file-scanner/pull/17))
-
-### Added
-
-
-### Changed
-
 
 ## [0.1.13] - 2025-09-07
 
