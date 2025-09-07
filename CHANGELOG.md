@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- More workflow changes. ([PR #14](https://github.com/redvers/jndi-file-scanner/pull/14))
 
 ### Added
 
