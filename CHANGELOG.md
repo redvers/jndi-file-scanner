@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Looks like a newer version may solve my issues. ([PR #17](https://github.com/redvers/jndi-file-scanner/pull/17))
 
 ### Added
 
