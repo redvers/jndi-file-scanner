@@ -1,16 +1,10 @@
 # Change Log
 
-## [unreleased] - unreleased
+## [0.1.13] - 2025-09-07
 
 ### Fixed
 
 - Fix concurrency error in release.yml file. ([PR #16](https://github.com/redvers/jndi-file-scanner/pull/16))
-
-### Added
-
-
-### Changed
-
 
 ## [0.1.12] - 2025-09-07
 
