@@ -1,15 +1,6 @@
 # Change Log
 
-## [unreleased] - unreleased
-
-### Fixed
-
-
-### Added
-
-
-### Changed
-
+## [0.1.10] - 2025-09-07
 
 ## [0.1.9] - 2025-09-07
 
