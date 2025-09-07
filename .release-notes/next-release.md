@@ -1,3 +1,3 @@
-## Generation of Static Binaries
+## Workflow Updates for Releases
 
-We're now using github workflows to generate a static binary which should be able to run on any Linux distribution.
+Many many release iterations to get the changelog-bot rotating appropriately.
