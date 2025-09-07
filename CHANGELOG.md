@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Fix concurrency error in release.yml file. ([PR #16](https://github.com/redvers/jndi-file-scanner/pull/16))
 
 ### Added
 
