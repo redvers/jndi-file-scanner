@@ -1,16 +1,10 @@
 # Change Log
 
-## [unreleased] - unreleased
+## [0.1.12] - 2025-09-07
 
 ### Fixed
 
 - Attempting to fix for 0.1.12 ([PR #15](https://github.com/redvers/jndi-file-scanner/pull/15))
-
-### Added
-
-
-### Changed
-
 
 ## [0.1.9] - 2025-09-07
 
