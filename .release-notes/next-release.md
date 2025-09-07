@@ -1,5 +1,3 @@
-# Added static binary generation via github workflows
+## Generation of Static Binaries
 
-## Added
-
-Added github workflow to do automated builds of a static binary via workflows.
+We're now using github workflows to generate a static binary which should be able to run on any Linux distribution.
