@@ -6,6 +6,9 @@ concurrency:
   group: pr-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  packages: read
+
 jobs:
   superlinter:
     name: Lint bash, docker, markdown, and yaml
@@ -22,22 +25,6 @@ jobs:
           VALIDATE_MD: true
           VALIDATE_YAML: true
 
-# lint-python-commands:
-#   name: Lint python commands
-#   runs-on: ubuntu-latest
-#   steps:
-#     - uses: actions/checkout@v4.1.1
-#     - name: pylint
-#       run: make pylint
-
-# validate-docker-image-builds:
-#   name: Validate Docker image builds
-#   runs-on: ubuntu-latest
-#   steps:
-#     - uses: actions/checkout@v4.1.1
-#     - name: Docker build
-#       run: "docker build --pull ."
-
   verify-changelog:
     name: Verify CHANGELOG is valid
     runs-on: ubuntu-latest
@@ -47,3 +34,20 @@ jobs:
         uses: docker://ghcr.io/ponylang/changelog-tool:release
         with:
           args: changelog-tool verify
+
+  test-static:
+    name: Test Alpine Static Generation
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/redvers/pony-dependency-builder:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Build
+        run: echo ${{ github.sha }} > Release.txt
+      - name: Test
+        run: cat Release.txt
+      - name: alpine specific
+        run: echo 'use "lib:lzma"' > alpine.pony
+      - name: build-binary
+        run: make static
