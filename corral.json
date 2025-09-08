@@ -19,7 +19,7 @@
     "homepage": "https://github.com/redvers/jndi-file-scanner",
     "license": "GPLv2",
     "documentation_url": "https://redvers.github.io/jndi-file-scanner",
-    "version": "0.1.15",
+    "version": "0.1.16",
     "name": "jndi-file-scanner"
   }
 }
